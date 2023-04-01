@@ -17,7 +17,7 @@ public:
     //дружественная функция (имеет доступ к приватным полям класса) - перегруженный оператор << для вывода координат
   friend std::ostream& operator << (std::ostream &os, const  Coords &coords)
     {
-       return os << coords.row << " " << coords.column;
+       return os << " " << coords.row << " " << coords.column << "\n";
     }
 };
 
@@ -44,7 +44,7 @@ enum FigureType
 
 
 
-//структура для фигуры
+//класс фигуры
 class Figure
 {
 private:
@@ -52,43 +52,42 @@ private:
 	  FigureType type;        //тип фигуры
 
 public:
-    Figure() : color(white), type(Empty) 
-    {
-
-    } 
-    friend std::ostream& operator << (std::ostream &os, const Figure &figure)
+    //конструктор по умолчанию
+    Figure() : color(white), type(Empty) {} 
+ 
+  //дружественная функция (перегрузка <<) для вывода типа фигуры
+ friend std::ostream& operator << (std::ostream &os, const Figure &figure)
+    
     {
         return os << figure.type;
     }
+
+    //проверка типа фигуры 
     bool IsA(FigureType t) const 
     {
       return t == type;
     }       
 };
 
-
+//класс клетки
 class Cell
 {
 private:
 	  Color color;      // цвет клетки
 	  Figure figure;    // фигура, стоящая на клетке
-      Coords coords;  // координаты клетки
+   Coords coords;  // координаты клетки
 
 public:
-    Cell() : color(white), figure(Figure()), coords(Coords()) 
-    {
-    
-    }
+    //конструктор по умолчанию 
+    Cell() : color(white), figure(Figure()), coords(Coords()) {}
 
-    Cell(int _row, int _column, Color _colorCell) : color(_colorCell), figure(Figure()), coords(Coords(_row,  _column)) 
-    {
+    Cell(int _row, int _column, Color _colorCell) : color(_colorCell), figure(Figure()), coords(Coords(_row,  _column)) {}
     
-    }
-    
+    //перегрузка оператора << 
     friend std::ostream &operator << (std::ostream &os, const Cell &cell)
     {
-         
-        return cell.figure.IsA(Empty) ? os << cell.color : os << cell.figure;
+        //возможно, здесь дополнительно стоит добавить тернарный оператор для цвета клетки
+        return cell.figure.type == 'E' ? os << cell.color : os << cell.figure;
     }
 };
 
