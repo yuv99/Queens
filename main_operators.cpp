@@ -1,26 +1,20 @@
 #include <cmath>
 #include <iostream>
 
-//using namespace std;
-
-//структура для координат
+//класс координат
 class Coords
 {
 private:
     int row;
     int column;
-    
 
+    //конструктор по умолчанию
 public:
-    Coords() : row(-1), column(-100) 
-    {
-    
-    }
+    Coords() : row(-1), column(-100) {}
     Coords(int _row, int _column) : row(_row), column(_column) 
-    {
-          
-    }
+    {}
     
+    //дружественная функция (имеет доступ к приватным полям класса) - перегруженный оператор << для вывода координат
   friend std::ostream& operator << (std::ostream &os, const  Coords &coords)
     {
        return os << coords.row << " " << coords.column;
@@ -32,20 +26,20 @@ public:
 //цвет
 enum Color
 {
-    white,
-    black
+    white = 'w',
+    black = 'b'
 };
 
 //тип фигуры
 enum FigureType
 {
-	  Pawn = 1, //пешка
-	  Bishop,	  //слон 2
-	  Queen,	  //ферзь 3
-	  King,	  //король 4
-	  Horse,	  //конь 5
-	  Rook,	  //ладья 6
-	  Empty	  //нет фигуры 7
+	  Pawn = 'P',     //пешка
+	  Bishop = 'B',   //слон 
+	  Queen = 'Q',    //ферзь 
+	  King = 'K',     //король 
+	  Horse = 'H',	    //конь 
+	  Rook = 'R',     //ладья 
+	  Empty	 = 'E'    //нет фигуры 
 };
 
 
