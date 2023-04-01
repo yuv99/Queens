@@ -39,7 +39,7 @@ enum FigureType
 	  King = 'K',     //король 
 	  Horse = 'H',	    //конь 
 	  Rook = 'R',     //ладья 
-	  Empty	 = 'E'    //нет фигуры 
+	  Empty = 'E'    //нет фигуры 
 };
 
 
