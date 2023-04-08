@@ -100,6 +100,7 @@ public:
     	   	occupiedCells[i] = Cell();
     	   }
     	}
+    ~OccupiedCells() {}
     	//перегрузка оператора <<
     	 friend std::ostream &operator << (std::ostream &os, const OccupiedCells &occupiedCells)
     {
@@ -134,6 +135,7 @@ public:
             }
         }
     }
+   ~Board() {}
  //нужна дружественная функция для печати занятых клеток
 };
 
