@@ -4,16 +4,14 @@
 //класс координат
 class Coords
 {
-private:
     int row;
     int column;
-
-    //конструктор по умолчанию
 public:
+    //конструктор по умолчанию
     Coords() : row(-1), column(-100) {}
-    Coords(int _row, int _column) : row(_row), column(_column) 
-    {}
-    
+    Coords(int _row, int _column) : row(_row), column(_column) {}
+    //деструктор
+    ~Coords() {}
     //дружественная функция (имеет доступ к приватным полям класса) - перегруженный оператор << для вывода координат
   friend std::ostream& operator << (std::ostream &os, const  Coords &coords)
     {
@@ -47,19 +45,20 @@ enum FigureType
 //класс фигуры
 class Figure
 {
-private:
 	  Color color;            // цвет фигуры
 	  FigureType type;        //тип фигуры
 
 public:
     //конструктор по умолчанию
     Figure() : color(white), type(Empty) {} 
- 
-  //дружественная функция (перегрузка <<) для вывода типа фигуры
+    //деструктор
+    ~Figure() {}
+   //дружественная функция (перегрузка <<) для вывода типа фигуры
  friend std::ostream& operator << (std::ostream &os, const Figure &figure)
     
     {
-        return os << figure.type;
+        char a = figure.type;
+        return os << a;
     }
 
     //проверка типа фигуры 
@@ -72,7 +71,6 @@ public:
 //класс клетки
 class Cell
 {
-private:
 	  Color color;      // цвет клетки
 	  Figure figure;    // фигура, стоящая на клетке
    Coords coords;  // координаты клетки
@@ -80,28 +78,46 @@ private:
 public:
     //конструктор по умолчанию 
     Cell() : color(white), figure(Figure()), coords(Coords()) {}
-
+    //инициализация значениями
     Cell(int _row, int _column, Color _colorCell) : color(_colorCell), figure(Figure()), coords(Coords(_row,  _column)) {}
-    
+    //деструктор
+    ~Cell() {}
     //перегрузка оператора << 
     friend std::ostream &operator << (std::ostream &os, const Cell &cell)
     {
-        //возможно, здесь дополнительно стоит добавить тернарный оператор для цвета клетки
-        return cell.figure.type == 'E' ? os << cell.color : os << cell.figure;
+        char color = cell.color;
+        return cell.figure.IsA(Empty) ? os << color : os << cell.figure;
     }
 };
 
-
-
+class OccupiedCells
+{
+    int num;   //число занятых клеток в массиве ферзей
+    Cell occupiedCells[8];
+public:
+    OccupiedCells() : num(0) {
+    	   for (int i = 0; i < 8; i++) {
+    	   	occupiedCells[i] = Cell();
+    	   }
+    	}
+    	//перегрузка оператора <<
+    	 friend std::ostream &operator << (std::ostream &os, const OccupiedCells &occupiedCells)
+    {
+        for (int i=0; i<occupiedCells.num; i++) {
+        	os << occupiedCells.occupiedCells[i];
+        }
+        return os;
+    }
+};
 
 //структура для доски
 class Board
 {
-private:
   	Cell cells[8][8];
+  	OccupiedCells occupiedCells;
  
 public:  	
-    Board()
+    Board() : occupiedCells(OccupiedCells())
     {
         for (int i = 0; i <= 7; i++)
         {
@@ -118,60 +134,12 @@ public:
             }
         }
     }
-
+ //нужна дружественная функция для печати занятых клеток
 };
 
-
-class OccupiedCells
-{
-private:
-    int num;   //число занятых клеток в массиве ферзей
-    Cell occupiedCells[8];
-    
-public:
-    OccupiedCells() : num(0)
-    {
-    
-    }
-};
 
 
 /*
-
-
-//печать типа фигуры
-void PrintCell(Cell cell)
-{
-    switch (cell.figure.type)
-    {
-    case Pawn:
-        cout << "P\t";
-        break;
-    case Bishop:
-        cout << "B\t";
-        break;
-    case Queen:
-        cout << "Q";
-        break;
-    case King:
-        cout << "K\t";
-        break;
-    case Horse:
-        cout << "H\t";
-        break;
-    case Rook:
-        cout << "R\t";
-        break;
-    case Empty:
-        //тернарный оператор для печати цвета пустой клетки
-        cell.color == white ? cout << "-" : cout << "*";
-        break;
-    default:
-        cout << "Фигура не найдена\n";
-    }
-}
-
-
 
 //печать координат ферзей
 void PrintQueens(OccupiedCells &occupied)
@@ -184,7 +152,6 @@ void PrintQueens(OccupiedCells &occupied)
        cout << occupied.occupiedCells[i].coords.row + 1 << " ";
     }
 }
-
 
 
 //функция печати доски
@@ -209,13 +176,10 @@ void PrintBoard(Board board)
     }
     cout << "\n";
 }
+*/
 
-//проверка клетки на пустоту
-bool IsEmpty(Cell cell)
-{
-    return cell.figure.type == Empty;
-}
 
+/*
 //проверка, бьется ли клетка
 bool IsBeaten(OccupiedCells &occupied, Cell cell)
 {  
@@ -237,6 +201,7 @@ bool IsBeaten(OccupiedCells &occupied, Cell cell)
     //если доска не пуста, и мы не наткнулись на бьющуюся клетку, то возвращаем false (нет, не бьется)
     return false;
 }
+
 
 //добавить фигуру в массив имеющихся на доске фигур
 void AddFigureInOccupiedArray(OccupiedCells &occupied, int row, int column)
@@ -341,42 +306,7 @@ void SetQueens(Board &board, OccupiedCells &occupied, int count, int start_row, 
 
 int main()
 {   
-    Cell c = Cell();
-    std::cout << c;
-   // Coords coords = Coords(3, 4);
-    //std::cout << coords;
-   // std::cout<< "конец\n";
-//    Figure f = Figure();
- //   std::cout << f;
-    /*
-    std::cout << "Begin";
-    int _row = 10;
-    int _column = 5;
-//    Color color = black;
-//  Cell c = Cell(_row, _column, color);
-//    std::cout<<c.color;
-//    Figure f = Figure();
-//    std::cout << f.color;
-    Coords c = Coords( _row,  _column);
-   std::cout << c.column;
-      Board board = Board();
-      PrintBoard(board);
-       OccupiedCells occupied = OccupiedCells();
-      SetQueens(board, occupied, 5, 0, 0);
-       PrintBoard(board);
-       */
-//    Color _colorCel = white;
-//    Cell cell = Cell(_row, _column, Color _colorCell)
-//    std::cout << "The end";
-/*
-    Board board = FillWithEmptyFigures();
-    OccupiedCells occupied = FillOccupied();
-    SetQueens(board, occupied, 5, 0, 0);
-    
-    cout << "\n\n";
-    PrintBoard(board);
-*/
-
-
+    OccupiedCells cells = OccupiedCells();
+    cells.occupiedCells[0] = Cell();
     return 0;
 }
