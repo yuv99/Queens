@@ -24,6 +24,7 @@ enum FigureType
     Empty = 'E'    //нет фигуры 
 };
 
+
 //вынести 
 
 //класс фигуры
@@ -88,7 +89,6 @@ public:
 
 
 
-
 //структура для доски
 class Board
 {
@@ -96,6 +96,8 @@ private:
     // доска представленная в виде вектора
     std::vector<Cell> cells;
     int size;         // число столбцов
+    std::map<char, int> position; //занятые клетки
+    
 
     //псевдокласс нужен для возможности обращения по [][]
     class Proxy
@@ -113,33 +115,56 @@ private:
     };
 
 public:
-/*
-   std::map<int ,  char > Position()
+//получаем занятые клетки
+   std::map<char, int> Position()
    {
-      std::map<int ,  char > position;
       for (int i = 0; i <  cells.size(); i++)
         {
             if (cells[i].CellFigure() != 'E') 
             {
-               position.insert({i, cells[i].CellFigure()});
-            }
-        }
-   return position;
-   }
-*/
-    std::map<int ,  char > Position()
-   {
-      std::map<int ,  char > position;
-      for (int i = 0; i <  cells.size(); i++)
-        {
-            if (cells[i].CellFigure() != 'E') 
-            {
-               position.insert({i, cells[i].CellFigure()});
+//               position[i] = cells[i].CellFigure();
+               position.insert({cells[i].CellFigure(), i});
             }
         }
    return position;
    }
    
+   
+   void PrintPosition(std::map<char, int> PositionList) {
+   	std::map <char, int> :: iterator it = PositionList.begin();
+   	for ( ; it != PositionList.end(); it++) {
+   		int num = ((it->second) % 8) + 1;
+   		int letter = (it->second)/8;
+   		switch(letter) {
+   			case 0:
+   			    std::cout << 'A';
+   			    break;
+   			case 1:
+   			    std::cout << 'B';
+   			    break;
+   			case 2:
+   			    std::cout << 'C';
+   			    break;
+   			case 3:
+   			    std::cout << 'D';
+   			    break;
+   			case 4:
+   			    std::cout << 'E';
+   			    break;
+   			case 5:
+   			    std::cout << 'F';
+   			    break;
+   			case 6:
+   			    std::cout << 'G';
+   			    break;
+   			case 7:
+   			    std::cout << 'H';
+   			    break;
+   		}
+   		std::cout << num << "\n";
+   	}
+   }
+
 
     std::vector<Cell>::iterator begin() {
         return cells.begin();
@@ -149,7 +174,6 @@ public:
         return cells.end();
     }
     Board(int bsize); //конструктор по умолчанию
-    //    Position
 
 //псевдокласс нужен для возможности обращения по [][]
     const Proxy operator[] (int i) const;
@@ -434,54 +458,13 @@ public:
 
 int main()
 {
-    //   Cell c = Cell();
-     //  std::cout << c;
     Board board = Board(8);
     std::cout << board;
     Cell a = board[1][0];
     std::cout << a;
     char checksymvol = board[1][0].CellFigure();
     std::cout << checksymvol;
-    std::map<int, char> Dictionary = board.Position();
-    for(auto &a: Dictionary)
-    {
-         std::cout << a.first << ' ' << a.second << '\n';
-    }
-    //    Cell a = board[63];
-        // Coords coords = Coords(3, 4);
-         //std::cout << coords;
-        // std::cout<< "конец\n";
-     //    Figure f = Figure();
-      //   std::cout << f;
-         /*
-         std::cout << "Begin";
-         int _row = 10;
-         int _column = 5;
-     //    Color color = black;
-     //  Cell c = Cell(_row, _column, color);
-     //    std::cout<<c.color;
-     //    Figure f = Figure();
-     //    std::cout << f.color;
-         Coords c = Coords( _row,  _column);
-        std::cout << c.column;
-           Board board = Board();
-           PrintBoard(board);
-            OccupiedCells occupied = OccupiedCells();
-           SetQueens(board, occupied, 5, 0, 0);
-            PrintBoard(board);
-            */
-            //    Color _colorCel = white;
-            //    Cell cell = Cell(_row, _column, Color _colorCell)
-            //    std::cout << "The end";
-            /*
-                Board board = FillWithEmptyFigures();
-                OccupiedCells occupied = FillOccupied();
-                SetQueens(board, occupied, 5, 0, 0);
-
-                cout << "\n\n";
-                PrintBoard(board);
-            */
-
+    std::map<char, int> Dictionary = board.Position();
 
     return 0;
 }
